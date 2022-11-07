@@ -4,6 +4,7 @@
 #include <iostream>
 #include <math.h>
 #include <conio.h>
+
 using namespace std;
 
 int n;
@@ -38,7 +39,7 @@ double d2fdx2(double x)
 int def_elem_interval(double x)
 {
 	for (int i = 1; i <= n; i++)
-		if ((x >= a + (i - 1) * h) && (x <= a + i * h))
+		if ((x >= a + (i-1) * h) && (x <= a + i * h))
 			return i;
 	return -1;
 }
@@ -52,12 +53,20 @@ double* get_moments_cub()
 	double C = h / 6;
 	double K = 0;
 	double* F_knots = (double*)malloc((n + 1) * sizeof(double));
+
 	for (int i = 0; i < n + 1; i++)
+	{
 		F_knots[i] = f(a + i * h);
+	}
+
 	double* G = (double*)malloc((n + 1) * sizeof(double));
 	G[0] = 0;
+
 	for (int i = 1; i < n; i++)
+	{
 		G[i] = (F_knots[i + 1] - 2 * F_knots[i] + F_knots[i - 1]) / h;
+	}
+
 	G[n] = 0;
 	//direct
 	double* alpha = (double*)malloc((n + 1) * sizeof(double));
@@ -66,13 +75,20 @@ double* get_moments_cub()
 	beta[0] = 0;
 	alpha[1] = K;
 	beta[1] = G[0];
-	for (int i = 1; i <= n - 1; i++) {
+
+	for (int i = 1; i <= n - 1; i++) 
+	{
 		alpha[i + 1] = -C / (A * alpha[i] + B);
 		beta[i + 1] = (G[i] - A * beta[i]) / (A * alpha[i] + B);
 	}
+
 	moments[n] = (G[n] + K * beta[n]) / (1 - K * alpha[n]);
+
 	for (int i = n - 1; i >= 0; i--)
+	{
 		moments[i] = alpha[i + 1] * moments[i + 1] + beta[i + 1];
+	}
+
 	return moments;
 }
 
@@ -237,7 +253,8 @@ double* Gauss_method(double** arr_a, double* vect)
 	}
 	double* x;
 	x = (double*)malloc((n - 1) * sizeof(double));
-	for (int i = 0; i < n - 1; i++) {
+	for (int i = 0; i < n - 1; i++) 
+	{
 		x[order[i]] = arr_a_k_minus_1[i][n - 1];
 	}
 	return x;
